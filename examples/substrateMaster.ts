@@ -60,10 +60,10 @@ async function main(): Promise<void> {
 	// Now we can create our `balances.transfer` unsigned tx. The following
 	// function takes the above data as arguments, so can be performed offline
 	// if desired.
-	const unsigned = methods.balances.transfer(
+	const unsigned = methods.balances.transferKeepAlive(
 		{
 			value: 12,
-			dest: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty', // Bob
+			dest: '5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL', // Bob
 		},
 		{
 			address: deriveAddress(alice.publicKey, DEV_CHAIN_SS58_FORMAT),
@@ -71,10 +71,10 @@ async function main(): Promise<void> {
 			blockNumber: registry
 				.createType('BlockNumber', block.header.number)
 				.toNumber(),
-			eraPeriod: 64,
+			eraPeriod: 0,
 			genesisHash,
 			metadataRpc,
-			nonce: 10, // Assuming this is Alice's first tx on the chain
+			nonce: 6, // Assuming this is Alice's first tx on the chain
 			specVersion,
 			tip: 0,
 			transactionVersion,
@@ -84,7 +84,7 @@ async function main(): Promise<void> {
 			registry,
 		}
 	);
-	
+
 	//console.log(`"Block number" ${unsigned.dest}`)
 	// Decode an unsigned transaction.
 	const decodedUnsigned = decode(unsigned, {
@@ -92,8 +92,9 @@ async function main(): Promise<void> {
 		registry,
 	});
 	console.log(
-		`\nDecoded Transaction\n  To: ${decodedUnsigned.method.args.dest}\n` +
-			`  Amount: ${decodedUnsigned.method.args.value}`
+		`\nDecoded Transaction\n  To: ${
+			(decodedUnsigned.method.args.dest as { id: string })?.id
+		}\n` + `  Amount: ${decodedUnsigned.method.args.value}`
 	);
 
 	// Construct the signing payload from an unsigned transaction.
@@ -107,11 +108,11 @@ async function main(): Promise<void> {
 		metadataRpc,
 		registry,
 	});
+	// Updated to show dest address instead of [object Object]
 	console.log(
 		`\nDecoded Transaction\n  To: ${
 			(decodedUnsigned.method.args.dest as { id: string })?.id
-		}\n` +
-			`  Amount: ${payloadInfo.method.args.value}`
+		}\n` + `  Amount: ${payloadInfo.method.args.value}`
 	);
 
 	// Sign a payload. This operation should be performed on an offline device.
@@ -132,8 +133,8 @@ async function main(): Promise<void> {
 	// Send the tx to the node. Again, since `txwrapper` is offline-only, this
 	// operation should be handled externally. Here, we just send a JSONRPC
 	// request directly to the node.
-	const actualTxHash = await rpcToNode('author_submitExtrinsic', [tx]);
-	console.log(`Actual Tx Hash: ${actualTxHash}`);
+	// const actualTxHash = await rpcToNode('author_submitExtrinsic', [tx]);
+	// console.log(`Actual Tx Hash: ${actualTxHash}`);
 
 	// Decode a signed payload.
 	const txInfo = decode(tx, {
@@ -141,8 +142,9 @@ async function main(): Promise<void> {
 		registry,
 	});
 	console.log(
-		`\nDecoded Transaction\n  To: ${txInfo.method.args.dest}\n` +
-			`  Amount: ${txInfo.method.args.value}\n`
+		`\nDecoded Transaction\n  To: ${
+			(decodedUnsigned.method.args.dest as { id: string })?.id
+		}\n` + `  Amount: ${txInfo.method.args.value}\n`
 	);
 }
 
