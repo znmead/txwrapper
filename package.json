@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@polkadot/api": "^4.9.2",
+    "@substrate/txwrapper": "^5.0.0",
     "memoizee": "^0.4.14"
   },
   "devDependencies": {

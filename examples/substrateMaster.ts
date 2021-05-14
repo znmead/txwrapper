@@ -74,7 +74,7 @@ async function main(): Promise<void> {
 			eraPeriod: 64,
 			genesisHash,
 			metadataRpc,
-			nonce: 0, // Assuming this is Alice's first tx on the chain
+			nonce: 9, // Assuming this is Alice's first tx on the chain
 			specVersion,
 			tip: 0,
 			transactionVersion,
@@ -84,7 +84,8 @@ async function main(): Promise<void> {
 			registry,
 		}
 	);
-
+	
+	//console.log(`"Block number" ${unsigned.dest}`)
 	// Decode an unsigned transaction.
 	const decodedUnsigned = decode(unsigned, {
 		metadataRpc,
@@ -107,7 +108,9 @@ async function main(): Promise<void> {
 		registry,
 	});
 	console.log(
-		`\nDecoded Transaction\n  To: ${payloadInfo.method.args.dest}\n` +
+		`\nDecoded Transaction\n  To: ${
+			(decodedUnsigned.method.args.dest as { id: string })?.id
+		}\n` +
 			`  Amount: ${payloadInfo.method.args.value}`
 	);
 

@@ -1037,12 +1037,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@substrate/txwrapper@workspace:.":
+"@substrate/txwrapper@^5.0.0, @substrate/txwrapper@workspace:.":
   version: 0.0.0-use.local
   resolution: "@substrate/txwrapper@workspace:."
   dependencies:
     "@polkadot/api": ^4.9.2
     "@substrate/dev": ^0.5.2
+    "@substrate/txwrapper": ^5.0.0
     "@types/memoizee": ^0.4.3
     memoizee: ^0.4.14
     rimraf: ^3.0.2
