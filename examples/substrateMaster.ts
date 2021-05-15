@@ -60,10 +60,15 @@ async function main(): Promise<void> {
 	// Now we can create our `balances.transfer` unsigned tx. The following
 	// function takes the above data as arguments, so can be performed offline
 	// if desired.
-	const unsigned = methods.balances.transferKeepAlive(
-		{
-			value: 12,
-			dest: '5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL', // Bob
+	const unsigned = methods.balances.transfer(
+		{	// has to be at least 100000000 to show on the frontend at 0.0001
+							   // 2500000000000000 is the max digits before this error kicks in:
+							   // Error: createType(Call):: Call: failed decoding 
+							   // balances.transfer:: Struct: failed on args: 
+							   // {"dest":"LookupSource","value":"Compact<Balance>"}:: 
+							   // Struct: failed on value: Compact<Balance>:: Assertion failed
+			value: 2500000000000000, 
+			dest: '5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy', // Bob
 		},
 		{
 			address: deriveAddress(alice.publicKey, DEV_CHAIN_SS58_FORMAT),
@@ -74,7 +79,7 @@ async function main(): Promise<void> {
 			eraPeriod: 0,
 			genesisHash,
 			metadataRpc,
-			nonce: 6, // Assuming this is Alice's first tx on the chain
+			nonce: 14, // Assuming this is Alice's first tx on the chain
 			specVersion,
 			tip: 0,
 			transactionVersion,
